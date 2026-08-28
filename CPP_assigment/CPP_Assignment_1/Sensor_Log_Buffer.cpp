@@ -5,48 +5,6 @@
 // 4. Compute min, max, and average in one single loop pass
 // 5. Count readings per category: Normal / Warning / Critical / Shutdown
 
-// #include <iostream>
-// #include <cmath>
-// using namespace std;
-// int main(){
-//     int N;
-//     cout<<"Enter the number of readings u want : "<<endl;
-//     cin>>N;
-//     cout<<"Number of Readings are  : " << N <<endl;
-   
-
-//     double arrN[100];
-//     for (int i = 0; i < N; i++){
-//         cin>> arrN[i];
-//     }
-     
-    
-//     for(int i = 0; i < N ; i++){
-//         if(arrN[i]< 0){
-//             continue;
-
-//         } else if(arrN[i] >= 45) {
-//              cout<<"Index"<<" "<< i <<endl;
-//                 break;
-//             }
-//             cout<<"valid readings"<<arrN[i] <<endl;
-//         }
-//     double minValue = arrN[0];
-//     double maxValue = arrN[0];
-//     double total = 0.0;    
-//     for (int i = 0; i < N; i++){
-//          minValue  = min(minValue, arrN[i]);
-//          maxValue = max(maxValue, arrN[i]);
-//         total+=arrN[i];
-
-//     }   
-//     double average = total / N;
-    
-//     cout<<"MINIMUM: " <<minValue <<endl;
-//     cout<<"MAXIMUM: "<<maxValue<<endl;
-//     cout<<"Average :"<<average<<endl;
-        
-//     }
 
 #include <iostream>
 #include <algorithm>
@@ -64,17 +22,18 @@ int main() {
         return 0;
     }
 
-    double arrN[100];
+    double temp_reading[N];
 
     cout << "Enter " << N << " temperature readings:" << endl;
 
     for (int i = 0; i < N; i++) {
-        cin >> arrN[i];
+        cin >> temp_reading[i];
     }
 
     // Variables for min, max and average
-    double minValue = 0;
-    double maxValue = 0;
+    double minValue = INT_MAX;
+    double maxValue = INT_MIN;
+    int first_index_greater_than_fortyfive = N; 
     double total = 0;
     int validCount = 0;
 
@@ -83,53 +42,73 @@ int main() {
     int warning = 0;
     int critical = 0;
     int shutdown = 0;
-
-    bool firstValid = true;
-
-    // Single loop pass
+    // Scan for the first reading at or above 45°C
     for (int i = 0; i < N; i++) {
 
         // Skip sensor errors
-        if (arrN[i] < 0) {
+        if (temp_reading[i] < 0) {
             continue;
         }
 
         // Print valid reading
-        cout << "Valid reading: " << arrN[i] << endl;
-
-        // Find first reading >= 45
-        if (arrN[i] >= 45) {
-            cout << "First reading at or above 45 degree C found at index: "
-                 << i << endl;
-            break;
-        }
-
-        // Min, max and average
-        if (firstValid) {
-            minValue = arrN[i];
-            maxValue = arrN[i];
-            firstValid = false;
-        } else {
-            minValue = min(minValue, arrN[i]);
-            maxValue = max(maxValue, arrN[i]);
-        }
-
-        total += arrN[i];
+        cout << "Valid reading: " << temp_reading[i] << endl;
         validCount++;
-
-        // Categories
-        if (arrN[i] < 30) {
+        // Category counter
+        if (temp_reading[i] < 30) {
             normal++;
         }
-        else if (arrN[i] < 40) {
+        else if (temp_reading[i] < 40) {
             warning++;
         }
-        else if (arrN[i] < 45) {
+        else if (temp_reading[i] < 45) {
             critical++;
         }
         else {
             shutdown++;
         }
+        // min max and total 
+        minValue = min(minValue , temp_reading[i]);
+        maxValue = max(maxValue,temp_reading[i]);
+        total += temp_reading[i];
+
+        // Find first reading >= 45
+        if (temp_reading[i] >= 45) {
+            first_index_greater_than_fortyfive = i;
+            cout << "First reading at or above 45 degree C found at index: "
+                 << i << endl;
+            break;
+        }
+
+    }
+    // Scanning after first_index_greater_than_fortyfive
+
+    for(int i= first_index_greater_than_fortyfive+1; i< N; i++){
+        if (temp_reading[i] < 0) {
+            continue;
+        }
+
+        // Print valid reading
+        cout << "Valid reading: " << temp_reading[i] << endl;
+        validCount++;
+        // category counters
+        if (temp_reading[i] < 30) {
+            normal++;
+        }
+        else if (temp_reading[i] < 40) {
+            warning++;
+        }
+        else if (temp_reading[i] < 45) {
+            critical++;
+        }
+        else {
+            shutdown++;
+        }
+        // min max and total
+        minValue = min(minValue , temp_reading[i]);
+        maxValue = max(maxValue,temp_reading[i]);
+        total += temp_reading[i];
+
+
     }
 
     // Average
