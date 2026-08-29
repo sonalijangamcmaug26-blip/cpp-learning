@@ -22,9 +22,9 @@ void resetSensorPairV2(int &reading1, int &reading2){
 void resetSensorPairV3(int *reading1, int *reading2){
     cout<< "--- V3: Call by Value ---" <<endl;
     cout<<"Before : "<< " A = "<<*reading1 <<"  "<< "B = " << *reading2 <<endl;
-    int *temp = reading1;
-    reading1 = reading2;
-    reading2 = temp;
+    int temp = *reading1;
+    *reading1 = *reading2;
+    *reading2 = temp;
    
 }
 
