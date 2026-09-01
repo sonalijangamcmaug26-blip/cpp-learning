@@ -21,3 +21,7 @@ int main()
 
     cout << "*(ptrArr + 1) =  " << *(ptrArr + 1)<<endl; // we can access array element usin ptr in this way
 }
+
+// ḍynamic allocation
+// int* arr1 = new int[3];	// dynamic memory allocation -> heap
+
